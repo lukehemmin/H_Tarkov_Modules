@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{31DE3EC4-DA4D-4356-8F5A-3657835862A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Aki.Build</RootNamespace>
+    <AssemblyName>Aki.Build</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aki.Bundles\Aki.Bundles.csproj">
+      <Project>{6ad307b7-a744-4802-9d1e-d4ba2d808d29}</Project>
+      <Name>Aki.Bundles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aki.Common\Aki.Common.csproj">
+      <Project>{7584f43a-5937-417e-abf4-c5f680f300fb}</Project>
+      <Name>Aki.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aki.Core\Aki.Core.csproj">
+      <Project>{ac9adc41-6007-4392-9d52-2bd850506052}</Project>
+      <Name>Aki.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aki.Loader\Aki.Loader.csproj">
+      <Project>{966ef83a-7b4e-4de1-bc73-e06b18eb411c}</Project>
+      <Name>Aki.Loader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aki.Reflection\Aki.Reflection.csproj">
+      <Project>{aee7b6f5-b07d-4e3e-b509-c098adb8a50f}</Project>
+      <Name>Aki.Reflection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aki.SinglePlayer\Aki.SinglePlayer.csproj">
+      <Project>{ca2cdb32-6c34-4b23-ab90-e7a776ad40f4}</Project>
+      <Name>Aki.SinglePlayer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (powershell.exe -ExecutionPolicy Unrestricted -File $(SolutionDir)\Aki.Build\build.ps1 -VSBuilt) else (echo NOTICE: Build with Release configuration to run build script)</PostBuildEvent>
+  </PropertyGroup>
+</Project>
