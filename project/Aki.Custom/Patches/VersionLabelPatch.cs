@@ -22,7 +22,7 @@ namespace Aki.Custom.Patches
         }
 
         [PatchPostfix]
-        private static void PatchPostfix(object __result)
+        internal static void PatchPostfix(object __result)
         {
             if (string.IsNullOrEmpty(_versionLabel))
             {
@@ -32,7 +32,7 @@ namespace Aki.Custom.Patches
             }
 
             Traverse.Create(MonoBehaviourSingleton<PreloaderUI>.Instance).Field("_alphaVersionLabel").Property("LocalizationKey").SetValue("{0}");
-            Traverse.Create(MonoBehaviourSingleton<PreloaderUI>.Instance).Field("string_1").SetValue(_versionLabel);
+            Traverse.Create(MonoBehaviourSingleton<PreloaderUI>.Instance).Field("string_2").SetValue(_versionLabel);
             Traverse.Create(__result).Field("Major").SetValue(_versionLabel);
         }
     }

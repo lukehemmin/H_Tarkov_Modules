@@ -41,7 +41,7 @@ namespace Aki.Custom.Patches
         /// This should fix that.
         /// </summary>
         [PatchPrefix]
-        private static bool PatchPrefix(ref bool __result, BotControllerClass __instance, IAIDetails aggressor, IAIDetails groupOwner, IAIDetails target)
+        private static bool PatchPrefix(BotControllerClass __instance, IAIDetails aggressor, IAIDetails groupOwner, IAIDetails target)
         {
             BotZone botZone = groupOwner.AIData.BotOwner.BotsGroup.BotZone;
             foreach (var item in __instance.Groups())
