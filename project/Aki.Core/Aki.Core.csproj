@@ -1,97 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AC9ADC41-6007-4392-9D52-2BD850506052}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aki.Core</RootNamespace>
+	  <TargetFramework>net472</TargetFramework>
     <AssemblyName>aki-core</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <Company>Aki</Company>
+    <Copyright>Copyright @ Aki 2022</Copyright>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Shared\References\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\Shared\References\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FilesChecker">
-      <HintPath>..\Shared\References\FilesChecker.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\Shared\References\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\Shared\References\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Assembly-CSharp" HintPath="..\Shared\Hollowed\Assembly-CSharp.dll" Private="False" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="..\Shared\Managed\Assembly-CSharp-firstpass.dll" Private="False" />
+    <Reference Include="FilesChecker" HintPath="..\Shared\Managed\FilesChecker.dll" Private="False" />
+    <Reference Include="UnityEngine" HintPath="..\Shared\Managed\UnityEngine.dll" Private="False" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="..\Shared\Managed\UnityEngine.CoreModule.dll" Private="False" />
+    <Reference Include="UnityEngine.UnityWebRequestModule" HintPath="..\Shared\Managed\UnityEngine.UnityWebRequestModule.dll" Private="False" />
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule" HintPath="..\Shared\Managed\UnityEngine.UnityWebRequestTextureModule.dll" Private="False" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Models\FakeCertificateHandler.cs" />
-    <Compile Include="Models\FakeFileCheckerResult.cs" />
-    <Compile Include="Patches\ConsistencyMultiPatch.cs" />
-    <Compile Include="Patches\ConsistencySinglePatch.cs" />
-    <Compile Include="Patches\WebSocketPatch.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Patches\BattlEyePatch.cs" />
-    <Compile Include="Patches\SslCertificatePatch.cs" />
-    <Compile Include="Patches\UnityWebRequestPatch.cs" />
-    <Compile Include="Utils\ValidationUtil.cs" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" ExcludeAssets="runtime" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Aki.Common\Aki.Common.csproj">
-      <Project>{7584f43a-5937-417e-abf4-c5f680f300fb}</Project>
-      <Name>Aki.Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aki.Reflection\Aki.Reflection.csproj">
-      <Project>{aee7b6f5-b07d-4e3e-b509-c098adb8a50f}</Project>
-      <Name>Aki.Reflection</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\Aki.Common\Aki.Common.csproj" />
+    <ProjectReference Include="..\Aki.Reflection\Aki.Reflection.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

@@ -1,4 +1,3 @@
-using Aki.Common.Utils;
 using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
 using EFT;
@@ -22,7 +21,7 @@ namespace Aki.Custom.Patches
         {
             if (type.Name == nameof(BotControllerClass) && type.GetMethod(methodName) != null)
             {
-                Log.Info($"{methodName}: {type.FullName}");
+                Logger.LogInfo($"{methodName}: {type.FullName}");
                 return true;
             }
 
@@ -65,9 +64,10 @@ namespace Aki.Custom.Patches
         private static bool ShouldAttack(IAIDetails attacker, IAIDetails victim, BotGroupClass groupToCheck)
         {
             // Group should target if player attack a victim on the same side or if the group is not on the same side as the player.
-            bool shouldAttack = attacker.Side != groupToCheck.Side || attacker.Side == victim.Side;
+            bool shouldAttack = attacker.Side != groupToCheck.Side
+                                || attacker.Side == victim.Side;
 
-            return !groupToCheck.HaveMemberWithRole(WildSpawnType.gifter) && groupToCheck.ShallRavageFor(victim) && shouldAttack;
+            return !groupToCheck.HaveMemberWithRole(WildSpawnType.gifter) && groupToCheck.ShallRevengeFor(victim) && shouldAttack;
         }
     }
 }

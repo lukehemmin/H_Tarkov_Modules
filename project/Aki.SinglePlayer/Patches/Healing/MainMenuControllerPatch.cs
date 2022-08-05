@@ -22,7 +22,22 @@ namespace Aki.SinglePlayer.Patches.Healing
         {
             var healthController = __instance.HealthController;
             var listener = Utils.Healing.HealthListener.Instance;
-            listener.Init(healthController, false);
+
+            if (healthController == null)
+            {
+                Logger.LogInfo("MainMenuControllerPatch() - healthController is null");
+            }
+
+            if (listener == null)
+            {
+                Logger.LogInfo("MainMenuControllerPatch() - listener is null");
+            }
+
+            if (healthController != null && listener != null)
+            {
+                listener.Init(healthController, false);
+            }
+                
         }
     }
 }

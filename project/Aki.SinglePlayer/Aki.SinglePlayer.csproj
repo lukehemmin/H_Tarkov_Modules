@@ -1,118 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aki.SinglePlayer</RootNamespace>
+	  <TargetFramework>net472</TargetFramework>
     <AssemblyName>aki-singleplayer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup>
+    <Company>Aki</Company>
+    <Copyright>Copyright @ Aki 2022</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Shared\References\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ItemComponent.Types">
-      <HintPath>..\Shared\References\ItemComponent.Types.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Comfort">
-      <HintPath>..\Shared\References\Comfort.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\Shared\References\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\Shared\References\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Assembly-CSharp" HintPath="..\Shared\Hollowed\Assembly-CSharp.dll" Private="False" />
+	<Reference Include="Comfort.Unity" HintPath="..\Shared\Managed\Comfort.Unity.dll" Private="False" />
+    <Reference Include="ItemComponent.Types" HintPath="..\Shared\Managed\ItemComponent.Types.dll" Private="False" />
+    <Reference Include="Comfort" HintPath="..\Shared\Managed\Comfort.dll" Private="False" />
+    <Reference Include="UnityEngine" HintPath="..\Shared\Managed\UnityEngine.dll" Private="False" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="..\Shared\Managed\UnityEngine.CoreModule.dll" Private="False" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Models\Healing\BodyPartHealth.cs" />
-    <Compile Include="Models\RaidFix\BundleLoader.cs" />
-    <Compile Include="Models\Healing\EBodyPartEffect.cs" />
-    <Compile Include="Models\Healing\PlayerHealth.cs" />
-    <Compile Include="Models\Progression\SaveProfileRequest.cs" />
-    <Compile Include="Patches\Quests\EndByTimerPatch.cs" />
-    <Compile Include="Patches\Quests\SpawnPmcPatch.cs" />
-    <Compile Include="Patches\RaidFix\MaxBotPatch.cs" />
-    <Compile Include="Patches\RaidFix\TinnitusFixPatch.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Patches\RaidFix\BotTemplateLimitPatch.cs" />
-    <Compile Include="Patches\RaidFix\GetNewBotTemplatesPatch.cs" />
-    <Compile Include="Patches\RaidFix\RemoveUsedBotProfilePatch.cs" />
-    <Compile Include="Patches\Healing\PlayerPatch.cs" />
-    <Compile Include="Patches\MainMenu\InsuranceScreenPatch.cs" />
-    <Compile Include="Patches\MainMenu\SelectLocationScreenPatch.cs" />
-    <Compile Include="Patches\Progression\ExperienceGainPatch.cs" />
-    <Compile Include="Patches\Progression\OfflineSpawnPointPatch.cs" />
-    <Compile Include="Patches\ScavMode\ExfilPointManagerPatch.cs" />
-    <Compile Include="Patches\ScavMode\LoadOfflineRaidScreenPatch.cs" />
-    <Compile Include="Patches\ScavMode\ScavExfilPatch.cs" />
-    <Compile Include="Patches\ScavMode\ScavPrefabLoadPatch.cs" />
-    <Compile Include="Patches\ScavMode\ScavProfileLoadPatch.cs" />
-    <Compile Include="Patches\Healing\MainMenuControllerPatch.cs" />
-    <Compile Include="Patches\Quests\DogtagPatch.cs" />
-    <Compile Include="Patches\Progression\OfflineSavePatch.cs" />
-    <Compile Include="Utils\Healing\HealthListener.cs" />
-    <Compile Include="Utils\Progression\NotesJsonConverter.cs" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" ExcludeAssets="runtime" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Aki.Common\Aki.Common.csproj">
-      <Project>{7584f43a-5937-417e-abf4-c5f680f300fb}</Project>
-      <Name>Aki.Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aki.Reflection\Aki.Reflection.csproj">
-      <Project>{aee7b6f5-b07d-4e3e-b509-c098adb8a50f}</Project>
-      <Name>Aki.Reflection</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\Aki.Common\Aki.Common.csproj" />
+    <ProjectReference Include="..\Aki.Reflection\Aki.Reflection.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HarmonyX">
-      <Version>2.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
-    </PackageReference>
-    <PackageReference Include="MonoMod.RuntimeDetour">
-      <Version>21.12.13.1</Version>
-    </PackageReference>
-    <PackageReference Include="MonoMod.Utils">
-      <Version>21.12.13.1</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

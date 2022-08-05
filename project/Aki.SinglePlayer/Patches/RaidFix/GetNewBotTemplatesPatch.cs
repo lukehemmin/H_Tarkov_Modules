@@ -2,7 +2,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using EFT;
-using Aki.Common.Utils;
 using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
 using Aki.SinglePlayer.Models.RaidFix;
@@ -72,7 +71,7 @@ namespace Aki.SinglePlayer.Patches.RaidFix
         private static Profile GetFirstResult(Task<Profile[]> task)
         {
             var result = task.Result[0];
-            Log.Info($"Loading bot profile from server. role: {result.Info.Settings.Role} side: {result.Side}");
+            Logger.LogInfo($"Loading bot profile from server. role: {result.Info.Settings.Role} side: {result.Side}");
             return result;
         }
     }

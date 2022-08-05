@@ -1,5 +1,4 @@
-﻿using Aki.Common.Utils;
-using Aki.Reflection.Patching;
+﻿using Aki.Reflection.Patching;
 using EFT;
 using HarmonyLib;
 using System.Collections.Generic;
@@ -38,14 +37,14 @@ namespace Aki.SinglePlayer.Patches.RaidFix
 
             if (searchIndex == -1)
             {
-                Log.Error($"Patch {nameof(TinnitusFixPatch)} failed: Could not find reference code.");
+                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not find reference code.");
                 return instructions;
             }
 
             // The next instruction after our reference point should be a 'br' with the condition exit label
             if (codes[searchIndex + 1].opcode != OpCodes.Br)
             {
-                Log.Error($"Patch {nameof(TinnitusFixPatch)} failed: Could not locate 'br' instruction");
+                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not locate 'br' instruction");
                 return instructions;
             }
 
@@ -65,7 +64,7 @@ namespace Aki.SinglePlayer.Patches.RaidFix
 
             if (insertIndex == -1)
             {
-                Log.Error($"Patch {nameof(TinnitusFixPatch)} failed: Could not find instruction insert location.");
+                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not find instruction insert location.");
             }
 
             // Add a new condition that checks if your player is the one who has the contusion effect applied

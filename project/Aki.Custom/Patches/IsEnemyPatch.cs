@@ -14,6 +14,7 @@ namespace Aki.Custom.Patches
         private static Type _targetType;
         private static FieldInfo _sideField;
         private static FieldInfo _enemiesField;
+        private readonly string _targetMethodName = "IsEnemy";
 
         public IsEnemyPatch()
         {
@@ -26,7 +27,7 @@ namespace Aki.Custom.Patches
         {
             if (type.GetMethod("AddEnemy") != null && type.GetMethod("AddEnemyGroupIfAllowed") != null)
             {
-                Log.Info($"IsEnemyPatch: {type.FullName}");
+                Logger.LogInfo($"IsEnemyPatch: {type.FullName}");
                 return true;
             }
 
@@ -35,13 +36,14 @@ namespace Aki.Custom.Patches
 
         protected override MethodBase GetTargetMethod()
         {
-            return _targetType.GetMethod("IsEnemy");
+            return _targetType.GetMethod(_targetMethodName);
         }
 
         /// <summary>
         /// IsEnemy()
-        /// Goal: if bot not found in enemy dictionary, we manually choose if they're an enemy or friend
+        /// Goal: Make bots take botSide into account when deciding if another player/bot is an enemy
         /// Check enemy cache list first, if not found, choose a value
+        /// Needed to ensure bot checks the enemy side, not just its botType
         /// </summary>
         [PatchPrefix]
         private static bool PatchPrefix(ref bool __result, object __instance, IAIDetails requester)
@@ -60,11 +62,6 @@ namespace Aki.Custom.Patches
                 {
                     if (requester.Side == EPlayerSide.Usec)
                     {
-                        result = false;
-                    }
-                    else
-                    {
-                        // everyone else is an enemy to usecs
                         result = true;
                     }
                 }
@@ -72,11 +69,6 @@ namespace Aki.Custom.Patches
                 {
                     if (requester.Side == EPlayerSide.Bear)
                     {
-                        result = false;
-                    }
-                    else
-                    {
-                        // everyone else is an enemy to bears
                         result = true;
                     }
                 }

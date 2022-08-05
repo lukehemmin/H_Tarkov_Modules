@@ -28,7 +28,7 @@ namespace Aki.Custom.Patches
             {
                 var json = RequestHandler.GetJson("/singleplayer/settings/version");
                 _versionLabel = Json.Deserialize<VersionResponse>(json).Version;
-                Log.Info($"Server version: {_versionLabel}");
+                Logger.LogInfo($"Server version: {_versionLabel}");
             }
 
             Traverse.Create(MonoBehaviourSingleton<PreloaderUI>.Instance).Field("_alphaVersionLabel").Property("LocalizationKey").SetValue("{0}");

@@ -116,7 +116,7 @@ namespace Aki.Bundles.Patches
             var manifest = (File.Exists(filepath)) ? await GetManifestBundle(filepath) : await GetManifestJson(filepath);
 
             // load bundles
-            var bundleNames = manifest.GetAllAssetBundles().Union(BundleSettings.Bundles.Keys).ToArray();
+            var bundleNames = manifest.GetAllAssetBundles().Union(BundleManager.Bundles.Keys).ToArray();
             var bundles = (IEasyBundle[])Array.CreateInstance(EasyBundleHelper.Type, bundleNames.Length);
 
             if (bundleLock == null)

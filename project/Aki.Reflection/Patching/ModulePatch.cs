@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Aki.Common.Utils;
+using BepInEx.Logging;
 using HarmonyLib;
 
 namespace Aki.Reflection.Patching
@@ -15,9 +15,14 @@ namespace Aki.Reflection.Patching
         private readonly List<HarmonyMethod> _finalizerList;
         private readonly List<HarmonyMethod> _ilmanipulatorList;
 
-        // required?
+        protected static ManualLogSource Logger { get; private set; }
+
         protected ModulePatch() : this(null)
         {
+            if (Logger == null)
+            {
+                Logger = BepInEx.Logging.Logger.CreateLogSource(nameof(ModulePatch));
+            }
         }
 
         /// <summary>
@@ -108,8 +113,8 @@ namespace Aki.Reflection.Patching
                 {
 		            _harmony.Patch(target, ilmanipulator: ilmanipulator);
                 }
-                
-                Log.Info($"Enabled patch {_harmony.Id}");
+
+                Logger.LogInfo($"Enabled patch {_harmony.Id}");
             }
             catch (Exception ex)
             {
@@ -132,7 +137,7 @@ namespace Aki.Reflection.Patching
             try
             {
                 _harmony.Unpatch(target, HarmonyPatchType.All, _harmony.Id);
-                Log.Info($"Disabled patch {_harmony.Id}");
+                Logger.LogInfo($"Disabled patch {_harmony.Id}");
             }
             catch (Exception ex)
             {

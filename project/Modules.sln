@@ -1,25 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1738
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Common", "Aki.Common\Aki.Common.csproj", "{7584F43A-5937-417E-ABF4-C5F680F300FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Common", "Aki.Common\Aki.Common.csproj", "{7584F43A-5937-417E-ABF4-C5F680F300FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Core", "Aki.Core\Aki.Core.csproj", "{AC9ADC41-6007-4392-9D52-2BD850506052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Core", "Aki.Core\Aki.Core.csproj", "{AC9ADC41-6007-4392-9D52-2BD850506052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.SinglePlayer", "Aki.SinglePlayer\Aki.SinglePlayer.csproj", "{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.SinglePlayer", "Aki.SinglePlayer\Aki.SinglePlayer.csproj", "{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Loader", "Aki.Loader\Aki.Loader.csproj", "{966EF83A-7B4E-4DE1-BC73-E06B18EB411C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Reflection", "Aki.Reflection\Aki.Reflection.csproj", "{AEE7B6F5-B07D-4E3E-B509-C098ADB8A50F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Reflection", "Aki.Reflection\Aki.Reflection.csproj", "{AEE7B6F5-B07D-4E3E-B509-C098ADB8A50F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Build", "Aki.Build\Aki.Build.csproj", "{31DE3EC4-DA4D-4356-8F5A-3657835862A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Build", "Aki.Build\Aki.Build.csproj", "{31DE3EC4-DA4D-4356-8F5A-3657835862A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Bundles", "Aki.Bundles\Aki.Bundles.csproj", "{6AD307B7-A744-4802-9D1E-D4BA2D808D29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Bundles", "Aki.Bundles\Aki.Bundles.csproj", "{6AD307B7-A744-4802-9D1E-D4BA2D808D29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Debugging", "Aki.Debugging\Aki.Debugging.csproj", "{D6737DC4-D139-4D0B-917F-49B38C411ECC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Debugging", "Aki.Debugging\Aki.Debugging.csproj", "{D6737DC4-D139-4D0B-917F-49B38C411ECC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aki.Custom", "Aki.Custom\Aki.Custom.csproj", "{77A88325-1E24-4DC0-B94F-722BADFC30F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aki.Custom", "Aki.Custom\Aki.Custom.csproj", "{77A88325-1E24-4DC0-B94F-722BADFC30F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +37,6 @@ Global
 		{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA2CDB32-6C34-4B23-AB90-E7A776AD40F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{966EF83A-7B4E-4DE1-BC73-E06B18EB411C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{966EF83A-7B4E-4DE1-BC73-E06B18EB411C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{966EF83A-7B4E-4DE1-BC73-E06B18EB411C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{966EF83A-7B4E-4DE1-BC73-E06B18EB411C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AEE7B6F5-B07D-4E3E-B509-C098ADB8A50F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AEE7B6F5-B07D-4E3E-B509-C098ADB8A50F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEE7B6F5-B07D-4E3E-B509-C098ADB8A50F}.Release|Any CPU.ActiveCfg = Release|Any CPU

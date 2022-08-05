@@ -28,7 +28,7 @@ namespace Aki.Common.Http
                 request.ServerCertificateValidationCallback = delegate { return true; };
             }
 
-            request.Timeout = 1000;
+            request.Timeout = 15000;
             request.Method = method;
             request.Headers.Add("Accept-Encoding", "deflate");
 

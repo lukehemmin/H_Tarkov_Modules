@@ -1,4 +1,3 @@
-using Aki.Common.Utils;
 using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
 using EFT;
@@ -40,12 +39,12 @@ namespace Aki.Debugging.Patches
                 if (_alphaLabel != null)
                 {
                     _alphaLabel.text = $"Looking at: [{aiming.x}, {aiming.y}, {aiming.z}]";
-                    Log.Info(_alphaLabel.text);
+                    Logger.LogInfo(_alphaLabel.text);
                 }
 
                 var position = playerOwner.transform.position;
                 var rotation = playerOwner.transform.rotation.eulerAngles;
-                Log.Info($"Character position: [{position.x},{position.y},{position.z}] | Rotation: [{rotation.x},{rotation.y},{rotation.z}]");
+                Logger.LogInfo($"Character position: [{position.x},{position.y},{position.z}] | Rotation: [{rotation.x},{rotation.y},{rotation.z}]");
             }
         }
 
@@ -63,7 +62,7 @@ namespace Aki.Debugging.Patches
             }
             catch (Exception e)
             {
-                Log.Error($"Coordinate Debug raycast failed: {e.Message}");
+                Logger.LogError($"Coordinate Debug raycast failed: {e.Message}");
                 return Vector3.zero;
             }
         }

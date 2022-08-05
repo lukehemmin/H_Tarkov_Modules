@@ -19,7 +19,7 @@ namespace Aki.Core.Patches
         {
             __result.certificateHandler = _certificateHandler;
             __result.disposeCertificateHandlerOnDispose = false;
-            __result.timeout = 1000;
+            __result.timeout = 15000;
         }
     }
 }

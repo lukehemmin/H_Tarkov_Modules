@@ -1,4 +1,3 @@
-using Aki.Common.Utils;
 using Aki.Reflection.CodeWrapper;
 using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
@@ -17,13 +16,10 @@ namespace Aki.SinglePlayer.Patches.ScavMode
         {
             return typeof(MainApplication)
                 .GetNestedTypes(PatchConstants.PrivateFlags)
-                .Single(x => 
-                    x.GetField("entryPoint") != null 
-                    && x.GetField("timeAndWeather") != null
-                    && x.GetField("location") != null
-                    && x.GetField("mainApplication_0") != null
-                    && x.GetField("timeHasComeScreenController") == null
-                    && x.Name.Contains("Struct"))
+                .Single(x => x.GetField("timeAndWeather") != null
+                              && x.GetField("mainApplication_0") != null
+                              && x.GetField("timeHasComeScreenController") == null
+                              && x.Name.Contains("Struct"))
                 .GetMethods(PatchConstants.PrivateFlags)
                 .FirstOrDefault(x => x.Name == "MoveNext");
         }
@@ -49,7 +45,7 @@ namespace Aki.SinglePlayer.Patches.ScavMode
             // Patch failed.
             if (searchIndex == -1)
             {
-                Log.Error(string.Format("Patch {0} failed: Could not find reference code.", MethodBase.GetCurrentMethod()));
+                Logger.LogError(string.Format("Patch {0} failed: Could not find reference code.", MethodBase.GetCurrentMethod()));
                 return instructions;
             }
 
@@ -65,9 +61,8 @@ namespace Aki.SinglePlayer.Patches.ScavMode
                 new Code(OpCodes.Ldfld, typeof(ClientApplication), "_backEnd"),
                 new Code(OpCodes.Callvirt, PatchConstants.BackendInterfaceType, "get_Session"),
                 new Code(OpCodes.Ldloc_1),
-                new Code(OpCodes.Ldfld, typeof(MainApplication), "esideType_0"),
-                new Code(OpCodes.Ldc_I4_0),
-                new Code(OpCodes.Ceq),
+                new Code(OpCodes.Ldfld, typeof(MainApplication), "_raidSettings"),
+                new Code(OpCodes.Callvirt, typeof(RaidSettings), "get_IsPmc"),
                 new Code(OpCodes.Brfalse, brFalseLabel),
                 new Code(OpCodes.Callvirt, PatchConstants.SessionInterfaceType, "get_Profile"),
                 new Code(OpCodes.Br, brLabel),

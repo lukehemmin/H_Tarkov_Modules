@@ -1,5 +1,6 @@
 using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
+using EFT;
 using System.Linq;
 using System.Reflection;
 
@@ -14,30 +15,19 @@ namespace Aki.SinglePlayer.Patches.MainMenu
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MainMenuController).GetMethods(PatchConstants.PrivateFlags).FirstOrDefault(IsTargetMethod);
+            return typeof(MainMenuController).GetMethod("method_62", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         [PatchPrefix]
-        private static void PrefixPatch(ref bool local)
+        private static void PrefixPatch(RaidSettings ___raidSettings_0)
         {
-            local = false;
+            ___raidSettings_0.RaidMode = ERaidMode.Online;
         }
 
         [PatchPostfix]
-        private static void PostfixPatch(ref bool ___bool_0)
+        private static void PostfixPatch(RaidSettings ___raidSettings_0)
         {
-            ___bool_0 = true;
-        }
-
-        private static bool IsTargetMethod(MethodInfo mi)
-        {
-            var parameters = mi.GetParameters();
-            return (parameters.Length == 4
-                && parameters[0].Name == "local"
-                && parameters[1].Name == "weatherSettings"
-                && parameters[2].Name == "botsSettings"
-                && parameters[3].Name == "wavesSettings"
-                && parameters[0].ParameterType == typeof(bool));
+            ___raidSettings_0.RaidMode = ERaidMode.Local;
         }
     }
 }

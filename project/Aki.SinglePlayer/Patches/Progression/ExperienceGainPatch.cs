@@ -18,21 +18,21 @@ namespace Aki.SinglePlayer.Patches.Progression
             var parameters = mi.GetParameters();
             return (parameters.Length == 3
                 && parameters[0].Name == "profile"
-                && parameters[1].Name == "isLocal"
+                && parameters[1].Name == "isOnline"
                 && parameters[2].Name == "exitStatus"
                 && parameters[1].ParameterType == typeof(bool));
         }
 
         [PatchPrefix]
-        private static void PatchPrefix(ref bool isLocal)
+        private static void PatchPrefix(ref bool isOnline)
         {
-            isLocal = false;
+            isOnline = false;
         }
 
         [PatchPostfix]
-        private static void PatchPostfix(ref bool isLocal)
+        private static void PatchPostfix(ref bool isOnline)
         {
-            isLocal = true;
+            isOnline = true;
         }
     }
 }
