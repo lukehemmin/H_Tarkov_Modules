@@ -1,6 +1,7 @@
 ﻿using Aki.Reflection.Patching;
 using Aki.Reflection.Utils;
 using EFT;
+using EFT.Bots;
 using EFT.UI.Matchmaker;
 using EFT.UI.Screens;
 using HarmonyLib;
@@ -25,25 +26,25 @@ namespace Aki.SinglePlayer.Patches.ScavMode
         static LoadOfflineRaidScreenPatch()
         {
             _ = nameof(MainMenuController.InventoryController);
-            _ = nameof(WeatherSettings.IsRandomWeather);
-            _ = nameof(BotsSettings.IsScavWars);
+            _ = nameof(TimeAndWeatherSettings.IsRandomWeather);
+            _ = nameof(BotControllerSettings.IsScavWars);
             _ = nameof(WavesSettings.IsBosses);
 
             var menuControllerType = typeof(MainMenuController);
 
-            _onReadyScreenMethod = menuControllerType.GetMethod("method_37", PatchConstants.PrivateFlags);
+            _onReadyScreenMethod = menuControllerType.GetMethod("method_39", PatchConstants.PrivateFlags);
             _isLocalField = menuControllerType.GetField("bool_0", PatchConstants.PrivateFlags);
-            _menuControllerField = typeof(MainApplication).GetFields(PatchConstants.PrivateFlags).FirstOrDefault(x => x.FieldType == typeof(MainMenuController));
+            _menuControllerField = typeof(TarkovApplication).GetFields(PatchConstants.PrivateFlags).FirstOrDefault(x => x.FieldType == typeof(MainMenuController));
 
             if (_menuControllerField == null)
             {
-                Logger.LogError("LoadOfflineRaidScreenPatch() menuControllerField is null and could not be found in MainApplication class");
+                Logger.LogError($"LoadOfflineRaidScreenPatch() menuControllerField is null and could not be found in {nameof(TarkovApplication)} class");
             }
         }
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MainMenuController).GetMethod("method_58", PatchConstants.PrivateFlags);
+            return typeof(MainMenuController).GetMethod("method_63", PatchConstants.PrivateFlags);
         }
 
         [PatchTranspiler]
@@ -111,12 +112,13 @@ namespace Aki.SinglePlayer.Patches.ScavMode
             var profile = PatchConstants.BackEndSession.Profile;
             var menuController = (object)GetMenuController();
             var raidSettings = Traverse.Create(menuController).Field("raidSettings_0").GetValue<RaidSettings>();
-            var gclass = new MatchmakerOfflineRaidScreen.GClass2507(profile?.Info, ref raidSettings);
+            var matchmakerPlayersController = Traverse.Create(menuController).Field("gclass2783_0").GetValue<GClass2783>();
+            var gclass = new MatchmakerOfflineRaidScreen.GClass2772(profile?.Info, ref raidSettings, matchmakerPlayersController);
 
             gclass.OnShowNextScreen += LoadOfflineRaidNextScreen;
 
             // ready method
-            gclass.OnShowReadyScreen += (OfflineRaidAction)Delegate.CreateDelegate(typeof(OfflineRaidAction), menuController, "method_63");
+            gclass.OnShowReadyScreen += (OfflineRaidAction)Delegate.CreateDelegate(typeof(OfflineRaidAction), menuController, "method_67");
             gclass.ShowScreen(EScreenState.Queued);
         }
 

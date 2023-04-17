@@ -14,7 +14,13 @@ namespace Aki.SinglePlayer.Patches.Healing
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MainMenuController).GetMethod("method_1", PatchConstants.PrivateFlags);
+            var desiredType = typeof(MainMenuController);
+            var desiredMethod = desiredType.GetMethod("method_1", PatchConstants.PrivateFlags);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPostfix]

@@ -1,4 +1,7 @@
-﻿using Aki.Custom.Patches;
+﻿using System;
+using Aki.Custom.Airdrops.Patches;
+using Aki.Custom.Patches;
+using Aki.Custom.Utils;
 using BepInEx;
 
 namespace Aki.Custom
@@ -10,19 +13,40 @@ namespace Aki.Custom
         {
             Logger.LogInfo("Loading: Aki.Custom");
 
-            new BossSpawnChancePatch().Enable();
-            new BotDifficultyPatch().Enable();
-            new CoreDifficultyPatch().Enable();
-            new OfflineRaidMenuPatch().Enable();
-            new SessionIdPatch().Enable();
-            new VersionLabelPatch().Enable();
-            new IsEnemyPatch().Enable();
-            new AddEnemyPatch().Enable();
-            new CheckAndAddEnemyPatch().Enable();
-            new BotSelfEnemyPatch().Enable();
-            //new AddEnemyToAllGroupsInBotZonePatch().Enable();
-            //new AirdropBoxPatch().Enable();
-            //new AirdropPatch().Enable();
+            try
+            {
+                // Bundle patches should always load first
+                BundleManager.GetBundles();
+                new EasyAssetsPatch().Enable();
+                new EasyBundlePatch().Enable();
+
+                new BossSpawnChancePatch().Enable();
+                new BotDifficultyPatch().Enable();
+                new CoreDifficultyPatch().Enable();
+                new OfflineRaidMenuPatch().Enable();
+                new RaidSettingsWindowPatch().Enable();
+                new OfflineRaidSettingsMenuPatch().Enable();
+                new SessionIdPatch().Enable();
+                new VersionLabelPatch().Enable();
+                new IsEnemyPatch().Enable();
+                //new AddSelfAsEnemyPatch().Enable();
+                new CheckAndAddEnemyPatch().Enable();
+                new BotSelfEnemyPatch().Enable(); // needed
+                new AddEnemyToAllGroupsInBotZonePatch().Enable();
+                new AirdropPatch().Enable();
+                new AirdropFlarePatch().Enable();
+                new AddSptBotSettingsPatch().Enable();
+                new CustomAiPatch().Enable();
+                new ExitWhileLootingPatch().Enable();
+                new QTEPatch().Enable();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"{GetType().Name}: {ex}");
+                throw;
+            }
+
+            Logger.LogInfo("Completed: Aki.Custom");
         }
     }
 }

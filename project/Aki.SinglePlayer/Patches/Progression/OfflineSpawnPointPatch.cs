@@ -18,8 +18,15 @@ namespace Aki.SinglePlayer.Patches.Progression
 
         protected override MethodBase GetTargetMethod()
         {
-            return PatchConstants.EftTypes.First(IsTargetType)
-                .GetMethods(PatchConstants.PrivateFlags).First(m => m.Name.Contains("SelectSpawnPoint"));
+            var desiredType = PatchConstants.EftTypes.First(IsTargetType);
+            var desiredMethod = desiredType
+                .GetMethods(PatchConstants.PrivateFlags)
+                .First(m => m.Name.Contains("SelectSpawnPoint"));
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         private static bool IsTargetType(Type type)
@@ -50,25 +57,26 @@ namespace Aki.SinglePlayer.Patches.Progression
             var unfilteredFilteredSpawnPoints = mapSpawnPoints.ToList();
 
             // filter by e.g. 'Boiler Tanks' (always seems to be map name?)
-            mapSpawnPoints = mapSpawnPoints.Where(sp => sp?.Infiltration != null && (string.IsNullOrEmpty(infiltration) || sp.Infiltration.Equals(infiltration))).ToList();
+            if (!string.IsNullOrEmpty(infiltration))
+            {
+                mapSpawnPoints = mapSpawnPoints.Where(sp => sp?.Infiltration != null && (string.IsNullOrEmpty(infiltration) || sp.Infiltration.Equals(infiltration))).ToList();
+            }
 
-            if (side == EPlayerSide.Savage)
-            {
-                // Filter by 'category' and 'side'
-                mapSpawnPoints = mapSpawnPoints.Where(sp => sp.Categories.Contain(ESpawnCategory.Bot) && sp.Sides.Contain(EPlayerSide.Savage)).ToList();
-            }
-            else
-            {
-                // Filter by 'player' and by ('usec', 'bear')
-                mapSpawnPoints = mapSpawnPoints.Where(sp => sp.Categories.Contain(category) && sp.Sides.Contain(side)).ToList();
-            }
+            mapSpawnPoints = FilterByPlayerSide(mapSpawnPoints, category, side);
 
             __result = mapSpawnPoints.Count == 0
                     ? GetFallBackSpawnPoint(unfilteredFilteredSpawnPoints, category, side, infiltration)
                     : mapSpawnPoints.RandomElement();
 
+            Logger.LogInfo($"Desired spawnpoint: [{category}] [{side}] [{infiltration}]");
             Logger.LogInfo($"PatchPrefix SelectSpawnPoint: [{__result.Id}] [{__result.Name}] [{__result.Categories}] [{__result.Sides}] [{__result.Infiltration}]");
             return false;
+        }
+
+        private static List<ISpawnPoint> FilterByPlayerSide(List<ISpawnPoint> mapSpawnPoints, ESpawnCategory category, EPlayerSide side)
+        {
+            // Filter by category 'player' and by side ('usec', 'bear')
+            return mapSpawnPoints.Where(sp => sp.Categories.Contain(category) && sp.Sides.Contain(side)).ToList();
         }
 
         private static ISpawnPoint GetFallBackSpawnPoint(List<ISpawnPoint> spawnPoints, ESpawnCategory category, EPlayerSide side, string infiltration)

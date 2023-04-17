@@ -10,7 +10,7 @@ namespace Aki.Custom.Patches
     /// If a bot being added has an ID found in list_1, it means its trying to add itself to its enemy list
     /// Dont add bot to enemy list if its in list_1 and skip the rest of the AddEnemy() function
     /// </summary>
-    public class AddEnemyPatch : ModulePatch
+    public class AddSelfAsEnemyPatch : ModulePatch
     {
         private static readonly string methodName = "AddEnemy";
 

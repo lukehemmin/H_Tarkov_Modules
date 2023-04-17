@@ -5,15 +5,24 @@ using System.Reflection;
 
 namespace Aki.Custom.Patches
 {
+    /// <summary>
+    /// Boss spawn chance is 100%, all the time, this patch adjusts the chance to the maps boss wave value
+    /// </summary>
     public class BossSpawnChancePatch : ModulePatch
     {
         private static float[] _bossSpawnPercent;
 
         protected override MethodBase GetTargetMethod()
         {
-            return PatchConstants.LocalGameType.BaseType
+            var desiredType = PatchConstants.LocalGameType;
+            var desiredMethod = desiredType
                 .GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)
                 .SingleOrDefault(m => IsTargetMethod(m));
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod.Name}");
+
+            return desiredMethod;
         }
 
         private static bool IsTargetMethod(MethodInfo mi)

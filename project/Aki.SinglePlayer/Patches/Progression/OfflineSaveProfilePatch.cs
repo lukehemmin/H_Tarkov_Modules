@@ -31,12 +31,16 @@ namespace Aki.SinglePlayer.Patches.Progression
         {
             // method_45 - as of 16432
             // method_43 - as of 18876
-            var type = PatchConstants.EftTypes.Single(x => x.Name == "MainApplication");
+            var desiredType = PatchConstants.EftTypes.Single(x => x.Name == "TarkovApplication");
+            var desiredMethod = Array.Find(desiredType.GetMethods(PatchConstants.PrivateFlags), IsTargetMethod);
 
-            return Array.Find(type.GetMethods(PatchConstants.PrivateFlags), Match);
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
-        private bool Match(MethodInfo arg)
+        private bool IsTargetMethod(MethodInfo arg)
         {
             var parameters = arg.GetParameters();
             return parameters.Length > 4
@@ -47,12 +51,12 @@ namespace Aki.SinglePlayer.Patches.Progression
         }
 
         [PatchPrefix]
-        private static void PatchPrefix(string profileId, RaidSettings ____raidSettings, IBackendInterface ____backEnd,Result<ExitStatus, TimeSpan, ClientMetrics> result)
+        private static void PatchPrefix(string profileId, RaidSettings ____raidSettings, TarkovApplication __instance, Result<ExitStatus, TimeSpan, ClientMetrics> result)
         {
             // Get scav or pmc profile based on IsScav value
             var profile = (____raidSettings.IsScav)
-                ? ____backEnd.Session.ProfileOfPet
-                : ____backEnd.Session.Profile;
+                ? PatchConstants.BackEndSession.ProfileOfPet
+                : PatchConstants.BackEndSession.Profile;
 
             SaveProfileRequest request = new SaveProfileRequest
 			{

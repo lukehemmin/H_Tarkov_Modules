@@ -1,9 +1,8 @@
-﻿using Aki.Reflection.Patching;
-using EFT;
-using HarmonyLib;
-using System.Collections.Generic;
+﻿using EFT;
+using Comfort.Common;
 using System.Reflection;
-using System.Reflection.Emit;
+using Aki.Reflection.Patching;
+using System.Collections;
 
 namespace Aki.SinglePlayer.Patches.RaidFix
 {
@@ -11,80 +10,27 @@ namespace Aki.SinglePlayer.Patches.RaidFix
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Player).GetMethod("OnHealthEffectAdded", BindingFlags.Instance | BindingFlags.Public);
+            return typeof(BetterAudio).GetMethod("StartTinnitusEffect", BindingFlags.Instance | BindingFlags.Public);
         }
 
-        /// <summary>
-        /// Fixes the problem of the tinnitus sound effect being played on the player if any AI on the map get the contusion effect applied to them
-        /// The patch adds an extra condition to the check before playing the sound effect, making sure the sound is only played if contusion occurred on the player
-        /// </summary>
-        [PatchTranspiler]
-        private static IEnumerable<CodeInstruction> PatchTranspile(ILGenerator generator, IEnumerable<CodeInstruction> instructions)
+        // checks on invoke whether the player is stunned before allowing tinnitus
+        [PatchPrefix]
+        static bool PatchPrefix()
         {
-            var codes = new List<CodeInstruction>(instructions);
-            var searchCode = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BetterAudio), "StartTinnitusEffect"));
+            bool shouldInvoke = typeof(ActiveHealthControllerClass)
+                .GetMethod("FindActiveEffect", BindingFlags.Instance | BindingFlags.Public)
+                .MakeGenericMethod(typeof(ActiveHealthControllerClass)
+                .GetNestedType("Stun", BindingFlags.Instance | BindingFlags.NonPublic))
+                .Invoke(Singleton<GameWorld>.Instance.AllPlayers[0].ActiveHealthController, new object[] { EBodyPart.Common }) != null;
 
-            // Locate the reference instruction from which we can locate all the other relevant instructions
-            var searchIndex = -1;
-            for (var i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode == searchCode.opcode && codes[i].operand == searchCode.operand)
-                {
-                    searchIndex = i;
-                    break;
-                }
-            }
+            return shouldInvoke;
+        }
 
-            if (searchIndex == -1)
-            {
-                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not find reference code.");
-                return instructions;
-            }
-
-            // The next instruction after our reference point should be a 'br' with the condition exit label
-            if (codes[searchIndex + 1].opcode != OpCodes.Br)
-            {
-                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not locate 'br' instruction");
-                return instructions;
-            }
-
-            // We grab the target label that we can use to exit the condition if it's not satisfied
-            var skipLabel = (Label)codes[searchIndex + 1].operand;
-
-            // Locate the index at which our instructions should be inserted
-            var insertIndex = -1;
-            for (var i = searchIndex; i > searchIndex - 10; i--)
-            {
-                if (codes[i].opcode == OpCodes.Brtrue)
-                {
-                    insertIndex = i + 1;
-                    break;
-                }
-            }
-
-            if (insertIndex == -1)
-            {
-                Logger.LogError($"Patch {nameof(TinnitusFixPatch)} failed: Could not find instruction insert location.");
-            }
-
-            // Add a new condition that checks if your player is the one who has the contusion effect applied
-            var newCodes = new List<CodeInstruction>
-            {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Player), "get_IsYourPlayer")),
-                new CodeInstruction(OpCodes.Brfalse, skipLabel)
-            };
-
-            /* Original code line:
-             * else if (@class.effect is GInterface157 && !(this.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem is GClass1707))
-             *
-             * Updated code line:
-             * else if (@class.effect is GInterface157 && !(this.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem is GClass1707) && this.IsYourPlayer)
-             */
-
-            codes.InsertRange(insertIndex, newCodes);
-
-            return codes;
+        // prevent null coroutine exceptions
+        static IEnumerator CoroutinePassthrough()
+        {
+            yield return null;
+            yield break;
         }
     }
 }

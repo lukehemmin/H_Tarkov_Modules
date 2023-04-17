@@ -17,7 +17,13 @@ namespace Aki.SinglePlayer.Patches.RaidFix
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(BotsPresets).GetMethod("method_1", PatchConstants.PrivateFlags);
+            var desiredType = typeof(BotsPresets);
+            var desiredMethod = desiredType.GetMethod("method_1", PatchConstants.PrivateFlags);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPostfix]
@@ -35,7 +41,9 @@ namespace Aki.SinglePlayer.Patches.RaidFix
             foreach (WaveInfo wave in __result)
             {
                 var json = RequestHandler.GetJson($"/singleplayer/settings/bot/limit/{wave.Role}");
-                wave.Limit = (string.IsNullOrWhiteSpace(json)) ? 30 : Convert.ToInt32(json);
+                wave.Limit = (string.IsNullOrWhiteSpace(json))
+                    ? 30
+                    : Convert.ToInt32(json);
             }
         }
     }

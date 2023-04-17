@@ -6,11 +6,20 @@ using System.Reflection;
 
 namespace Aki.SinglePlayer.Patches.MainMenu
 {
+    /// <summary>
+    /// Remove the ready button from select location screen
+    /// </summary>
     public class SelectLocationScreenPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MatchMakerSelectionLocationScreen).GetMethod("Awake", PatchConstants.PrivateFlags);
+            var desiredType = typeof(MatchMakerSelectionLocationScreen);
+            var desiredMethod = desiredType.GetMethod("Awake", PatchConstants.PrivateFlags);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPostfix]

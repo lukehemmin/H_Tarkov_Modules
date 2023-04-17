@@ -10,7 +10,13 @@ namespace Aki.SinglePlayer.Patches.Healing
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Player).GetMethod("Init", PatchConstants.PrivateFlags);
+            var desiredType = typeof(Player);
+            var desiredMethod = desiredType.GetMethod("Init", PatchConstants.PrivateFlags);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPostfix]
@@ -18,10 +24,16 @@ namespace Aki.SinglePlayer.Patches.Healing
         {
             await __result;
 
-            if (profile != null && profile.Id.StartsWith("pmc"))
+            if (profile?.Id.StartsWith("pmc") == true)
             {
+                Logger.LogDebug($"Hooking up health listener to profile: {profile.Id}");
                 var listener = Utils.Healing.HealthListener.Instance;
                 listener.Init(__instance.HealthController, true);
+                Logger.LogDebug($"HealthController instance: {__instance.HealthController.GetHashCode()}");
+            }
+            else
+            {
+                Logger.LogDebug($"Skipped on HealthController instance: {__instance.HealthController.GetHashCode()} for profile id: {profile?.Id}");
             }
         }
     }

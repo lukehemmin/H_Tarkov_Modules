@@ -15,8 +15,8 @@ namespace Aki.Reflection.Utils
         public static Type[] FilesCheckerTypes { get; private set; }
         public static Type LocalGameType { get; private set; }
         public static Type ExfilPointManagerType { get; private set; }
-        public static Type BackendInterfaceType { get; private set; }
         public static Type SessionInterfaceType { get; private set; }
+        public static Type BackendSessionInterfaceType { get; private set; }
 
         private static ISession _backEndSession;
         public static ISession BackEndSession
@@ -25,7 +25,7 @@ namespace Aki.Reflection.Utils
             {
                 if (_backEndSession == null)
                 {
-                    _backEndSession = Singleton<ClientApplication>.Instance.GetClientBackEndSession();
+                    _backEndSession = Singleton<ClientApplication<ISession>>.Instance.GetClientBackEndSession();
                 }
 
                 return _backEndSession;
@@ -42,8 +42,8 @@ namespace Aki.Reflection.Utils
             FilesCheckerTypes = typeof(ICheckResult).Assembly.GetTypes();
             LocalGameType = EftTypes.Single(x => x.Name == "LocalGame");
             ExfilPointManagerType = EftTypes.Single(x => x.GetMethod("InitAllExfiltrationPoints") != null);
-            BackendInterfaceType = EftTypes.Single(x => x.GetMethods().Select(y => y.Name).Contains("CreateClientSession") && x.IsInterface);
             SessionInterfaceType = EftTypes.Single(x => x.GetMethods().Select(y => y.Name).Contains("GetPhpSessionId") && x.IsInterface);
+            BackendSessionInterfaceType = EftTypes.Single(x => x.GetMethods().Select(y => y.Name).Contains("ChangeProfileStatus") && x.IsInterface);
         }
     }
 }

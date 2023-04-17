@@ -4,6 +4,9 @@
     {
         Fracture,
         LightBleeding,
-        HeavyBleeding
+        HeavyBleeding,
+        MildMusclePain,
+        SevereMusclePain,
+        Unknown
     }
 }

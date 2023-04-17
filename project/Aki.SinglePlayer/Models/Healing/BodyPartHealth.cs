@@ -4,7 +4,7 @@ namespace Aki.SinglePlayer.Models.Healing
 {
     public class BodyPartHealth
     {
-        private Dictionary<EBodyPartEffect, float> _effects = new Dictionary<EBodyPartEffect, float>();
+        private readonly Dictionary<EBodyPartEffect, float> _effects = new Dictionary<EBodyPartEffect, float>();
         public float Maximum { get; private set; }
         public float Current { get; private set; }
 
@@ -24,6 +24,17 @@ namespace Aki.SinglePlayer.Models.Healing
         public void AddEffect(EBodyPartEffect bodyPartEffect, float time = -1)
         {
             _effects[bodyPartEffect] = time;
+        }
+
+        public void UpdateEffect(EBodyPartEffect bodyPartEffect, float time)
+        {
+            _effects[bodyPartEffect] = time;
+        }
+
+
+        public void RemoveAllEffects()
+        {
+            _effects.Clear();
         }
 
         public void RemoveEffect(EBodyPartEffect bodyPartEffect)

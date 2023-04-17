@@ -5,14 +5,14 @@ namespace Aki.Reflection.Utils
 {
     public static class ClientAppUtils
     {
-        public static ClientApplication GetClientApp()
+        public static ClientApplication<ISession> GetClientApp()
         {
-            return Singleton<ClientApplication>.Instance;
+            return Singleton<ClientApplication<ISession>>.Instance;
         }
 
-        public static MainApplication GetMainApp()
+        public static TarkovApplication GetMainApp()
         {
-            return GetClientApp() as MainApplication;
+            return GetClientApp() as TarkovApplication;
         }
     }
 }

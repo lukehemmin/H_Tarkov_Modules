@@ -1,3 +1,4 @@
+using System;
 using Aki.Core.Patches;
 using BepInEx;
 
@@ -10,12 +11,23 @@ namespace Aki.Core
         {
             Logger.LogInfo("Loading: Aki.Core");
 
-            new ConsistencySinglePatch().Enable();
-            new ConsistencyMultiPatch().Enable();
-            new BattlEyePatch().Enable();
-            new SslCertificatePatch().Enable();
-            new UnityWebRequestPatch().Enable();
-            new WebSocketPatch().Enable();
+            try
+            {
+                new ConsistencySinglePatch().Enable();
+                new ConsistencyMultiPatch().Enable();
+                new BattlEyePatch().Enable();
+                new SslCertificatePatch().Enable();
+                new UnityWebRequestPatch().Enable();
+                new WebSocketPatch().Enable();
+                new TransportPrefixPatch().Enable();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"{GetType().Name}: {ex}");
+                throw;
+            }
+
+            Logger.LogInfo("Completed: Aki.Core");
         }
     }
 }

@@ -118,6 +118,7 @@ namespace Aki.Reflection.Patching
             }
             catch (Exception ex)
             {
+                Logger.LogError($"{_harmony.Id}: {ex}");
                 throw new Exception($"{_harmony.Id}:", ex);
             }
         }
@@ -141,6 +142,7 @@ namespace Aki.Reflection.Patching
             }
             catch (Exception ex)
             {
+                Logger.LogError($"{_harmony.Id}: {ex}");
                 throw new Exception($"{_harmony.Id}:", ex);
             }
         }

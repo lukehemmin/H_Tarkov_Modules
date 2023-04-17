@@ -3,8 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# EmuTarkov
-[Bb]uild/
+# Aki
+**/Build/
+**/Shared/Managed/*
+**/tools/
 
 # User-specific files
 *.rsuser

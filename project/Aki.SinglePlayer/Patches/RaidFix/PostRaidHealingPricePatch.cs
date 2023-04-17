@@ -2,7 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Reflection;
-using TraderInfo = EFT.Profile.GClass1520;
+using TraderInfo = EFT.Profile.GClass1667;
 
 namespace Aki.SinglePlayer.Patches.RaidFix
 {
@@ -10,7 +10,13 @@ namespace Aki.SinglePlayer.Patches.RaidFix
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(TraderInfo).GetMethod("UpdateLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+            var desiredType = typeof(TraderInfo);
+            var desiredMethod = desiredType.GetMethod("UpdateLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPrefix]

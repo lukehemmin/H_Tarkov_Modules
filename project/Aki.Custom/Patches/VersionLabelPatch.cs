@@ -16,9 +16,18 @@ namespace Aki.Custom.Patches
 
         protected override MethodBase GetTargetMethod()
         {
-            return PatchConstants.EftTypes
+            try
+            {
+                return PatchConstants.EftTypes
                 .Single(x => x.GetField("Taxonomy", BindingFlags.Public | BindingFlags.Instance) != null)
                 .GetMethod("Create", BindingFlags.Public | BindingFlags.Static);
+            }
+            catch (System.Exception e)
+            {
+                Logger.LogInfo($"VersionLabelPatch failed {e.Message} {e.StackTrace} {e.InnerException.StackTrace}");
+                throw;
+            }
+            
         }
 
         [PatchPostfix]

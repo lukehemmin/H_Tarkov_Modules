@@ -15,13 +15,20 @@ namespace Aki.SinglePlayer.Patches.ScavMode
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MainApplication)
+            // Struct225 - 20575
+            var desiredType = typeof(TarkovApplication)
                 .GetNestedTypes(PatchConstants.PrivateFlags)
                 .Single(x => x.GetField("timeAndWeather") != null
                               && x.GetField("timeHasComeScreenController") != null
-                              && x.Name.Contains("Struct"))
-                .GetMethods(PatchConstants.PrivateFlags)
+                              && x.Name.Contains("Struct"));
+
+            var desiredMethod = desiredType.GetMethods(PatchConstants.PrivateFlags)
                 .FirstOrDefault(x => x.Name == "MoveNext");
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchTranspiler]
@@ -30,7 +37,7 @@ namespace Aki.SinglePlayer.Patches.ScavMode
             var codes = new List<CodeInstruction>(instructions);
 
             // Search for code where backend.Session.getProfile() is called.
-            var searchCode = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(PatchConstants.SessionInterfaceType, "get_Profile"));
+            var searchCode = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(PatchConstants.BackendSessionInterfaceType, "get_Profile"));
             var searchIndex = -1;
 
             for (var i = 0; i < codes.Count; i++)
@@ -45,34 +52,32 @@ namespace Aki.SinglePlayer.Patches.ScavMode
             // Patch failed.
             if (searchIndex == -1)
             {
-                Logger.LogError(string.Format("Patch {0} failed: Could not find reference code.", MethodBase.GetCurrentMethod()));
+                Logger.LogError($"Patch {MethodBase.GetCurrentMethod()} failed: Could not find reference code.");
                 return instructions;
             }
 
-            // Move back by 4. This is the start of this method call.
-            // Note that we don't actually want to replace the code at searchIndex (which is a Ldloc0) since there is a branch
-            // instruction prior to this instruction that leads to it and we can reuse a Ldloc0 instruction here.
-            searchIndex -= 4;
+            // Move back by 2. This is the start of this method call.
+            searchIndex -= 2;
 
             var brFalseLabel = generator.DefineLabel();
             var brLabel = generator.DefineLabel();
             var newCodes = CodeGenerator.GenerateInstructions(new List<Code>()
             {
                 new Code(OpCodes.Ldloc_1),
-                new Code(OpCodes.Ldfld, typeof(ClientApplication), "_backEnd"),
-                new Code(OpCodes.Callvirt, PatchConstants.BackendInterfaceType, "get_Session"),
+                new Code(OpCodes.Call, typeof(ClientApplication<ISession>), "get_Session"),
                 new Code(OpCodes.Ldloc_1),
-                new Code(OpCodes.Ldfld, typeof(MainApplication), "_raidSettings"),
+                new Code(OpCodes.Ldfld, typeof(TarkovApplication), "_raidSettings"),
                 new Code(OpCodes.Callvirt, typeof(RaidSettings), "get_IsPmc"),
                 new Code(OpCodes.Brfalse, brFalseLabel),
-                new Code(OpCodes.Callvirt, PatchConstants.SessionInterfaceType, "get_Profile"),
+                new Code(OpCodes.Callvirt, PatchConstants.BackendSessionInterfaceType, "get_Profile"),
                 new Code(OpCodes.Br, brLabel),
                 new CodeWithLabel(OpCodes.Callvirt, brFalseLabel, PatchConstants.SessionInterfaceType, "get_ProfileOfPet"),
-                new CodeWithLabel(OpCodes.Stfld, brLabel, typeof(MainApplication).GetNestedTypes(BindingFlags.NonPublic).Single(IsTargetNestedType), "profile")
+                new CodeWithLabel(OpCodes.Stfld, brLabel, typeof(TarkovApplication).GetNestedTypes(BindingFlags.NonPublic).Single(IsTargetNestedType), "profile")
             });
 
-            codes.RemoveRange(searchIndex + 1, 5);
-            codes.InsertRange(searchIndex + 1, newCodes);
+            codes.RemoveRange(searchIndex, 4);
+            codes.InsertRange(searchIndex, newCodes);
+
             return codes.AsEnumerable();
         }
 

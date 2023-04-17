@@ -19,7 +19,7 @@ namespace Aki.Core.Patches
 		private static bool PatchPrefix(ref bool __result)
 		{
 			__result = ValidationUtil.Validate();
-			return false;
+			return false; // Skip origial
 		}
 	}
 }

@@ -5,7 +5,8 @@ using Aki.Custom.Models;
 using EFT.UI;
 using EFT.UI.Matchmaker;
 using System.Reflection;
-using UnityEngine;
+using EFT;
+using HarmonyLib;
 
 namespace Aki.Custom.Patches
 {
@@ -13,41 +14,55 @@ namespace Aki.Custom.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MatchmakerOfflineRaidScreen).GetMethod(nameof(MatchmakerOfflineRaidScreen.Show));
+            var desiredType = typeof(MatchmakerOfflineRaidScreen);
+            var desiredMethod = desiredType.GetMethod(nameof(MatchmakerOfflineRaidScreen.Show));
+
+            Logger.LogDebug($"{GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
-        [PatchPostfix]
-        private static void PatchPostfix(UpdatableToggle ____offlineModeToggle,
-            UpdatableToggle ____botsEnabledToggle,
-            DropDownBox ____aiAmountDropdown,
-            DropDownBox ____aiDifficultyDropdown,
-            UpdatableToggle ____enableBosses,
-            UpdatableToggle ____scavWars,
-            UpdatableToggle ____taggedAndCursed)
+        [PatchPrefix]
+        private static void PatchPrefix(object controller, UpdatableToggle ____offlineModeToggle)
         {
-            // disable "no progression save" panel
-            var warningPanel = GameObject.Find("Warning Panel");
-            UnityEngine.Object.Destroy(warningPanel);
+            var raidSettings = Traverse.Create(controller).Field<RaidSettings>("RaidSettings").Value;
 
-            // disable offline mode toggle
+            raidSettings.RaidMode = ERaidMode.Local;
+            raidSettings.BotSettings.IsEnabled = true;
+
+            // Default checkbox to be ticked
             ____offlineModeToggle.isOn = true;
-            ____offlineModeToggle.gameObject.SetActive(false);
-
-            
 
             // get settings from server
             var json = RequestHandler.GetJson("/singleplayer/settings/raid/menu");
             var settings = Json.Deserialize<DefaultRaidSettings>(json);
 
-            if (settings != null)
+            // TODO: Not all settings are used and they also don't cover all the new settings that are available client-side
+            if (settings == null)
             {
-                ____botsEnabledToggle.isOn = settings.EnablePve;
-                ____aiAmountDropdown.UpdateValue((int)settings.AiAmount, false);
-                ____aiDifficultyDropdown.UpdateValue((int)settings.AiDifficulty, false);
-                ____enableBosses.isOn = settings.BossEnabled;
-                ____scavWars.isOn = settings.ScavWars;
-                ____taggedAndCursed.isOn = settings.TaggedAndCursed;
+                return;
             }
+
+            raidSettings.BotSettings.BotAmount = settings.AiAmount;
+            raidSettings.WavesSettings.BotAmount = settings.AiAmount;
+            raidSettings.WavesSettings.BotDifficulty = settings.AiDifficulty;
+            raidSettings.WavesSettings.IsBosses = settings.BossEnabled;
+            raidSettings.BotSettings.IsScavWars = false;
+            raidSettings.WavesSettings.IsTaggedAndCursed = settings.TaggedAndCursed;
+        }
+
+        [PatchPostfix]
+        private static void PatchPostfix(MatchmakerOfflineRaidScreen __instance, UiElementBlocker ____onlineBlocker)
+        {
+            // Hide "no progression save" panel
+            var warningPanel = __instance.transform.Find("Content/WarningPanelHorLayout").gameObject;
+            warningPanel.SetActive(false);
+            var spacer = __instance.transform.Find("Content/Space (1)").gameObject;
+            spacer.SetActive(false);
+
+            // Disable "Enable practice mode for this raid" toggle
+            ____onlineBlocker.SetBlock(true, "Raids in SPT are always Offline raids. Don't worry - your progress will be saved!");
         }
     }
 }

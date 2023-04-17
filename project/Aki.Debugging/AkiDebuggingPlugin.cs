@@ -1,4 +1,5 @@
-﻿using Aki.Debugging.Patches;
+﻿using System;
+using Aki.Debugging.Patches;
 using BepInEx;
 
 namespace Aki.Debugging
@@ -10,7 +11,17 @@ namespace Aki.Debugging
         {
             Logger.LogInfo("Loading: Aki.Debugging");
 
-            // new CoordinatesPatch().Enable();
+            try
+            {
+                // new CoordinatesPatch().Enable();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"{GetType().Name}: {ex}");
+                throw;
+            }
+
+            Logger.LogInfo("Completed: Aki.Debugging");
         }
     }
 }

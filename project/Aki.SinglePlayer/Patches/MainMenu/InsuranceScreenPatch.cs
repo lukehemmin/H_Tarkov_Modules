@@ -1,11 +1,12 @@
 using Aki.Reflection.Patching;
-using Aki.Reflection.Utils;
 using EFT;
-using System.Linq;
 using System.Reflection;
 
 namespace Aki.SinglePlayer.Patches.MainMenu
 {
+    /// <summary>
+    /// Force ERaidMode to online to make interface show insurance page
+    /// </summary>
     class InsuranceScreenPatch : ModulePatch
     {
         static InsuranceScreenPatch()
@@ -15,7 +16,13 @@ namespace Aki.SinglePlayer.Patches.MainMenu
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(MainMenuController).GetMethod("method_62", BindingFlags.NonPublic | BindingFlags.Instance);
+            var desiredType = typeof(MainMenuController);
+            var desiredMethod = desiredType.GetMethod("method_66", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         [PatchPrefix]

@@ -8,22 +8,21 @@ using System.Reflection;
 
 namespace Aki.SinglePlayer.Patches.Quests
 {
+    /// <summary>
+    /// Having the raid timer reach zero results in a successful extract,
+    /// this patch makes it so letting the time reach zero results in a MIA result
+    /// </summary>
     public class EndByTimerPatch : ModulePatch
     {
-        private static Type _localGameBaseType;
-        private static PropertyInfo _profileIdProperty;
-        private static MethodInfo _stopRaidMethod;
-
-        static EndByTimerPatch()
-        {
-            _localGameBaseType = PatchConstants.LocalGameType.BaseType;
-            _profileIdProperty = _localGameBaseType.GetProperty("ProfileId", PatchConstants.PrivateFlags);
-            _stopRaidMethod = _localGameBaseType.GetMethods(PatchConstants.PrivateFlags).SingleOrDefault(IsStopRaidMethod);
-        }
-
         protected override MethodBase GetTargetMethod()
         {
-            return _localGameBaseType.GetMethods(PatchConstants.PrivateFlags).Single(x => x.Name.EndsWith("StopGame"));
+            var desiredType = PatchConstants.LocalGameType.BaseType;
+            var desiredMethod = desiredType.GetMethods(PatchConstants.PrivateFlags).SingleOrDefault(IsStopRaidMethod);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
 
         private static bool IsStopRaidMethod(MethodInfo mi)
@@ -41,19 +40,16 @@ namespace Aki.SinglePlayer.Patches.Quests
         }
 
         [PatchPrefix]
-        private static bool PrefixPatch(object __instance)
+        private static bool PrefixPatch(object __instance, ref ExitStatus exitStatus, ref string exitName)
         {
-            var profileId = _profileIdProperty.GetValue(__instance) as string;
-            var json = RequestHandler.GetJson("/singleplayer/settings/raid/endstate");
-            var enabled = (!string.IsNullOrWhiteSpace(json)) ? Convert.ToBoolean(json) : false;
-
-            if (!enabled)
+            // No extract name and successful, its a MIA
+            if (string.IsNullOrEmpty(exitName?.Trim()) && exitStatus == ExitStatus.Survived)
             {
-                return true;
+                exitStatus = ExitStatus.MissingInAction;
+                exitName = null;
             }
 
-            _stopRaidMethod.Invoke(__instance, new object[] { profileId, ExitStatus.MissingInAction, null, 0f });
-            return false;
+            return true; // Do original
         }
     }
 }

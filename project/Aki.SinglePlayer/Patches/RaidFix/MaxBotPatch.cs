@@ -6,16 +6,24 @@ using System.Reflection;
 
 namespace Aki.SinglePlayer.Patches.RaidFix
 {
-    class MaxBotPatch : ModulePatch 
+    /// <summary>
+    /// Alter the max bot cap with value stored in server, if value is -1, use existing value
+    /// </summary>
+    class MaxBotPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
-            var flags = BindingFlags.Public | BindingFlags.Instance;
-            var methodName = "SetSettings";
-            return PatchConstants.EftTypes.Single(x => x.GetMethod(methodName, flags) != null && IsTargetMethod(x.GetMethod(methodName, flags)))
-                .GetMethod(methodName, flags);
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            const string methodName = "SetSettings";
+            var desiredType = PatchConstants.EftTypes.Single(x => x.GetMethod(methodName, flags) != null && IsTargetMethod(x.GetMethod(methodName, flags)));
+            var desiredMethod = desiredType.GetMethod(methodName, flags);
+
+            Logger.LogDebug($"{this.GetType().Name} Type: {desiredType?.Name}");
+            Logger.LogDebug($"{this.GetType().Name} Method: {desiredMethod?.Name}");
+
+            return desiredMethod;
         }
-        
+
         private static bool IsTargetMethod(MethodInfo mi)
         {
             var parameters = mi.GetParameters();
@@ -30,7 +38,18 @@ namespace Aki.SinglePlayer.Patches.RaidFix
         {
             var json = RequestHandler.GetJson("/singleplayer/settings/bot/maxCap");
             var isParsable = int.TryParse(json, out maxCount);
-            maxCount = isParsable ? maxCount : 20;
+
+            if (isParsable)
+            {
+                if (maxCount == -1)
+                {
+                    return;
+                }
+
+                maxCount = isParsable
+                    ? maxCount
+                    : 20;
+            }
         }
     }
 }
